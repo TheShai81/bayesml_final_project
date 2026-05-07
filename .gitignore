@@ -1,0 +1,24 @@
+# directories
+transcripts/
+
+# python stuff
+__pycache__/
+
+# environments
+venv/
+.venv/
+env/
+ENV/
+.env
+
+# packages
+dist/
+build/
+*.egg-info/
+
+# tests
+.pytest_cache/
+
+# other
+*.log
+.DS_Store
