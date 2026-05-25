@@ -1,108 +1,180 @@
-# README
-## Bayesian Machine Learning (ADSP 32014) Final Project
-### Latent Space Warriors - Bayesian Modeling of Market Volatility Following Political Communication Events
+# Bayesian Machine Learning Final Project
 
-## Description
+## Latent Space Warriors: Political Communication and Market Volatility
 
-### Overview
+This project studies whether political communication events are associated with short-term market volatility. The core dataset combines local transcript text features with market variables such as VIX changes and S&P 500 returns. The modeling workflow identifies volatility regimes, studies transitions between those regimes, and compares NLP-only predictors against models with financial controls.
 
-We will investigate how political communication events influence short-term market volatility. The focus will be on modeling how markets respond to new political information such as speeches, interviews, or social media posts.
+Raw transcript files live in `transcripts/`, which is ignored by Git. The tracked files are derived datasets, notebooks, and aggregate visual outputs.
 
-The project will analyze whether sentiment, emotional intensity, or potentially even the topics of each political communication are associated with changes in market volatility. Uncertainty will be measured using the VIX volatility index, which reflects expected volatility in the U.S. stock market (CBOE).
+## Repository Structure
 
-### Bayesian Framework
-
-The objective is not to estimate a single fixed relationship between political communication and market volatility, but rather to estimate the posterior distribution of that relationship. For example, let xi be the sentiment score or linguistic features of political communication i and yi be the observed change in VIX following event i. A simple Bayesian model may be expressed as yi=+xi+𝜸zi+i for residual noise epsilon, sensitivity of market volatility to political communication features beta, control variable gamma, and baseline market behavior alpha. Bayesian inference treats beta as a distribution and observed data (political communications) is then used to update beliefs and obtain the posterior: P(|D) for observed communication features D (and potentially other market data, too).
-
-### Methodology
-
-- Event Collection
-  - Collect time stamped political communication events such as speeches, interviews, and Truth Social/X posts
-- Financial Data Collection
-  - Collect financial time series data such as VIX index values and/or S&P 500 returns
-- Text Processing and Feature Extraction
-  - Apply NLP techniques to calculate sentiment scores, emotion, and/or topics (if we’re feeling ambitious)
-  - These are our main explanatory variables
-- Bayesian Modeling
-  - Posterior distributions over model parameters can be estimated using maybe markov chain monte carlo methods as is usually the case with stock market data. I don’t think it’s taught in this class, but I’ve also read that variational inference is a common Bayesian approach.
-  - We start with a hypothesis that beta (the effect of political communications on volatility) is normally distributed with mean 0 and standard deviation 1, meaning with no data we are starting with the belief that communications have NO effect on volatility. Then, as more data is observed, we updated that belief as to how beta is distributed. So, as an example, maybe we end up observing that |D ~ N(.8, .3), suggesting a positive effect on volatility and lower uncertainty.
-- Features
-  - Target variable: ΔVIX
-  - Sentiment Scores(FinBERT): equals to the probability of positive minus the probability of negative
-  - Uncertainty Score: How much the speech expresses uncertainty
-  - Specific keywords: hawkish or dovish
-  - Source: speech by trump or other politicians
-  - Control variable: SPY return, CPI etc. 
-- Evaluation and Analysis
-  - Analyze posterior distributions over market sensitivity parameters, credible intervals for estimated effects, probability that certain features actually affect volatility.
-
----
-
-## Trump Transcript Scraper
-
-This script scrapes all transcript pages from the Senate Democrats Trump Transcript Archive.
-
-- Iterates through all 22 archive pages
-- Extracts every transcript link
-- Visits each transcript page
-- Extracts:
-  - Transcript title
-  - All <p> elements inside:
-  - div.js-press-release.RawHTML.mb-5
-  - Saves each transcript as a .txt file
-
-### Output Format
-
-Files are saved into:
-
-`transcripts/`
-
-Each filename follows:
-
-`MMDDYYYY-#.txt`
-
-Example:
-
-```
-04282026-0.txt
-04282026-1.txt
+```text
+.
+├── final_data/
+│   ├── model_ready_dataset.csv
+│   ├── finance_enriched_dataset.csv
+│   └── transcript_aggregate_features.csv
+├── notebooks/
+│   ├── baseline_model.ipynb
+│   ├── extension_model.ipynb
+│   ├── transcript_visualizations.ipynb
+│   ├── finance_results.ipynb
+│   ├── visualization_results.ipynb
+│   ├── prob_effect_comparison.csv
+│   └── assets/
+├── src/
+│   └── transcript_scraper.py
+└── transcripts/        # ignored by Git
 ```
 
-Where:
+## Data Outputs
 
-MMDDYYYY = transcript date
-`#` = transcript index for that date
+- `final_data/model_ready_dataset.csv`: main modeling dataset with NLP topic features, VIX variables, and S&P 500 controls.
+- `final_data/finance_enriched_dataset.csv`: finance-style derived fields, including forward returns, drawdowns, realized volatility, VIX shock flags, and risk-off indicators.
+- `final_data/transcript_aggregate_features.csv`: transcript-level aggregate features only. This file does not include raw transcript bodies or token lists.
 
-### TXT File Structure
+## Transcript Visualizations
 
-Each file contains:
+Notebook: `notebooks/transcript_visualizations.ipynb`  
+Figures: `notebooks/assets/transcript_visualizations/`
 
-```
-<title_placeholder>
+This notebook visualizes the transcript corpus using aggregate statistics. It avoids printing raw transcript bodies and exports only aggregate features.
+
+Generated figures:
+
+- `monthly_transcript_volume.png`: transcript count and total words by month.
+- `transcript_length_distribution.png`: distribution of cleaned word counts per transcript.
+- `calendar_activity_heatmap.png`: transcript count by month and weekday.
+- `top_terms_bar_chart.png`: most common cleaned non-stopword terms.
+- `top_bigrams_bar_chart.png`: most common two-word phrases.
+- `theme_keyword_prevalence.png`: broad keyword themes and share of transcripts mentioning each theme.
+- `monthly_theme_intensity.png`: theme mentions per 1,000 words over time.
+- `finance_keyword_mentions.png`: finance-related keyword counts.
+- `theme_cooccurrence_heatmap.png`: theme co-occurrence across transcripts.
+- `finance_intensity_vs_length.png`: finance keyword intensity versus transcript length.
+
+Current transcript summary:
+
+- 423 transcript files.
+- 403 transcripts with known dates.
+- Date range: 2025-05-24 to 2026-04-29.
+- 825,492 cleaned words.
+- Median transcript length: 1,431 cleaned words.
+
+## Finance Visualizations
+
+Notebook: `notebooks/finance_results.ipynb`  
+Figures: `notebooks/assets/finance_results/`
+
+This notebook derives market-style results from the model-ready data. It adds forward S&P 500 returns, VIX forward changes, drawdowns, realized volatility, VIX shock flags, and risk-off day indicators.
+
+Generated figures:
+
+- `price_vix_drawdown_view.png`: S&P 500 level, VIX level, and S&P 500 drawdown.
+- `forward_returns_by_regime.png`: average forward S&P 500 returns after low-, medium-, and high-VIX-move days.
+- `vix_shock_event_study.png`: event-study view around top-decile absolute VIX moves.
+- `sp500_vix_leverage_scatter.png`: relationship between S&P 500 daily returns and daily VIX changes.
+
+Current finance summary:
+
+- 183 market observations.
+- S&P 500 total return over the sample: about 20.5%.
+- Maximum S&P 500 drawdown: about -9.1%.
+- Average VIX: 18.40.
+- Maximum VIX: 31.05.
+
+## Model Result Visualizations
+
+Primary notebooks:
+
+- `notebooks/baseline_model.ipynb`
+- `notebooks/extension_model.ipynb`
+- `notebooks/visualization_results.ipynb`
+
+Figures:
+
+- `notebooks/assets/`
+- `notebooks/assets/additional_visualizations/`
+
+The baseline notebook fits a three-state volatility-regime model and then uses transition classifiers to test whether NLP topic features help predict next-period volatility states. The extension notebook fits a Bayesian multinomial transition model to quantify uncertainty in those effects. The visualization notebook creates presentation-ready plots from the model outputs.
+
+Generated model-result figures:
+
+- `vix_over_time_w_state.png`: VIX over time colored by inferred volatility state.
+- `high_volatility_predictors.png`: strongest NLP predictors of high-volatility transitions.
+- `low_volatility_predictors.png`: strongest NLP predictors of low-volatility transitions.
+- `nlp_after_controls_stability_plot.png`: coefficient stability after adding financial controls.
+- `additional_visualizations/regime_timeline_ribbon.png`: compact timeline of inferred volatility regimes.
+- `additional_visualizations/transition_matrix_heatmap.png`: HMM transition probability heatmap.
+- `additional_visualizations/topic_coefficient_lollipop.png`: NLP topic coefficients for high-volatility transitions.
+- `additional_visualizations/controls_dumbbell_plot.png`: topic effects before and after financial controls.
+- `additional_visualizations/bayesian_uncertainty_intervals.png`: Bayesian probability-effect intervals.
+- `additional_visualizations/probability_change_comparison.png`: probability changes with and without controls.
+- `additional_visualizations/topic_state_composition_heatmap.png`: average topic score by volatility regime.
+- `additional_visualizations/confusion_matrix_comparison.png`: NLP-only versus full-model confusion matrices.
+- `additional_visualizations/annotated_high_vix_events.png`: largest VIX-move days annotated on the VIX series.
+- `additional_visualizations/model_performance_comparison.png`: accuracy, macro F1, high-state precision, and high-state recall.
+
+Key model findings:
+
+- The regime model separates low-, medium-, and high-volatility movement days.
+- High volatility is persistent once entered.
+- NLP-only transition models show suggestive topic effects for high-volatility transitions.
+- Adding financial controls improves classification performance and shrinks many NLP topic effects.
+- The Bayesian extension shows substantial uncertainty around most topic effects.
+
+## Transcript Scraper
+
+Script: `src/transcript_scraper.py`
+
+The scraper collects transcript pages from the Senate Democrats Trump Transcript Archive and saves each transcript as a `.txt` file under `transcripts/`.
+
+Each transcript file follows this structure:
+
+```text
+<title>
 
 ===== TRANSCRIPT BEGIN =====
 
-<transcript-placeholder>
+<transcript body>
 ```
 
-This delimiter (```===== TRANSCRIPT BEGIN =====```) makes later preprocessing easier.
+The `transcripts/` directory is listed in `.gitignore`, so raw transcript files are not tracked by default.
 
-### Requirements
+## Requirements
 
-Install dependencies:
+The notebooks use common Python data-science packages:
 
-`pip install requests beautifulsoup4`
+```bash
+pip install pandas numpy matplotlib scikit-learn jupyter
+```
 
-### Running the Script
+The baseline model notebook also uses:
 
-Place the Python script in a folder and run:
+```bash
+pip install hmmlearn
+```
 
-`python transcript_scraper.py`
+The Bayesian extension notebook uses:
 
-The script will automatically create `transcripts/` in the same directory.
+```bash
+pip install pymc arviz pytensor
+```
 
-### Notes
-- The scraper includes a 0.5-second delay between requests to avoid overloading the server.
-- If a page fails, the scraper logs the error and continues.
-- UTF-8 encoding is used for all transcript files.
-- The script assumes the website structure remains consistent.
+The scraper uses:
+
+```bash
+pip install requests beautifulsoup4
+```
+
+## Reproducing the Current Outputs
+
+Run notebooks from the `notebooks/` directory:
+
+```bash
+jupyter nbconvert --to notebook --execute transcript_visualizations.ipynb --inplace
+jupyter nbconvert --to notebook --execute finance_results.ipynb --inplace
+jupyter nbconvert --to notebook --execute visualization_results.ipynb --inplace
+```
+
+The Bayesian extension can take much longer because it samples posterior distributions with PyMC.
