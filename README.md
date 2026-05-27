@@ -119,23 +119,19 @@ Figures: `notebooks/assets/transcript_visualizations/`
 
 This notebook visualizes the transcript corpus using aggregate statistics. It avoids printing raw transcript bodies and exports only aggregate features.
 
+Current transcript summary:
+
+- 423 transcript files.
+- 403 transcripts with known dates.
+- Date range: 2025-05-24 to 2026-04-29.
+- 825,492 cleaned words.
+- Median transcript length: 1,431 cleaned words.
+
 Generated figures:
 
 **Transcript count and total words by month**
 
 ![Transcript volume by month](notebooks/assets/transcript_visualizations/monthly_transcript_volume.png)
-
-**Distribution of cleaned word counts per transcript**
-
-![Transcript length distribution](notebooks/assets/transcript_visualizations/transcript_length_distribution.png)
-
-**Transcript count by month and weekday**
-
-![Transcript calendar activity heatmap](notebooks/assets/transcript_visualizations/calendar_activity_heatmap.png)
-
-**Most common cleaned non-stopword terms**
-
-![Top transcript terms](notebooks/assets/transcript_visualizations/top_terms_bar_chart.png)
 
 **Most common two-word phrases**
 
@@ -161,20 +157,20 @@ Generated figures:
 
 ![Finance intensity versus transcript length](notebooks/assets/transcript_visualizations/finance_intensity_vs_length.png)
 
-Current transcript summary:
-
-- 423 transcript files.
-- 403 transcripts with known dates.
-- Date range: 2025-05-24 to 2026-04-29.
-- 825,492 cleaned words.
-- Median transcript length: 1,431 cleaned words.
-
 ## Finance Visualizations
 
 Notebook: `notebooks/finance_results.ipynb`  
 Figures: `notebooks/assets/finance_results/`
 
 This notebook derives market-style results from the model-ready data. It adds forward S&P 500 returns, VIX forward changes, drawdowns, realized volatility, VIX shock flags, and risk-off day indicators.
+
+Current finance summary:
+
+- 183 market observations.
+- S&P 500 total return over the sample: about 20.5%.
+- Maximum S&P 500 drawdown: about -9.1%.
+- Average VIX: 18.40.
+- Maximum VIX: 31.05.
 
 Generated figures:
 
@@ -193,14 +189,6 @@ Generated figures:
 **Relationship between S&P 500 daily returns and daily VIX changes**
 
 ![S&P 500 returns versus VIX changes](notebooks/assets/finance_results/sp500_vix_leverage_scatter.png)
-
-Current finance summary:
-
-- 183 market observations.
-- S&P 500 total return over the sample: about 20.5%.
-- Maximum S&P 500 drawdown: about -9.1%.
-- Average VIX: 18.40.
-- Maximum VIX: 31.05.
 
 ## Model Result Visualizations
 
@@ -223,6 +211,10 @@ Generated model-result figures:
 
 ![VIX over time with inferred volatility state](notebooks/assets/vix_over_time_w_state.png)
 
+**Compact timeline of inferred volatility regimes**
+
+![Regime timeline ribbon](notebooks/assets/additional_visualizations/regime_timeline_ribbon.png)
+
 **Strongest NLP predictors of high-volatility transitions**
 
 ![High-volatility NLP predictors](notebooks/assets/high_volatility_predictors.png)
@@ -234,10 +226,6 @@ Generated model-result figures:
 **Coefficient stability after adding financial controls**
 
 ![NLP coefficient stability after controls](notebooks/assets/nlp_after_controls_stability_plot.png)
-
-**Compact timeline of inferred volatility regimes**
-
-![Regime timeline ribbon](notebooks/assets/additional_visualizations/regime_timeline_ribbon.png)
 
 **HMM transition probability heatmap**
 
@@ -275,7 +263,7 @@ Generated model-result figures:
 
 ![Model performance comparison](notebooks/assets/additional_visualizations/model_performance_comparison.png)
 
-Key model findings:
+### Key model findings:
 
 - The regime model separates low-, medium-, and high-volatility movement days.
 - High volatility is persistent once entered.
