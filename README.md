@@ -133,10 +133,6 @@ Generated figures:
 
 ![Transcript volume by month](notebooks/assets/transcript_visualizations/monthly_transcript_volume.png)
 
-**Most common two-word phrases**
-
-![Top transcript bigrams](notebooks/assets/transcript_visualizations/top_bigrams_bar_chart.png)
-
 **Broad keyword themes and share of transcripts mentioning each theme**
 
 ![Transcript theme keyword prevalence](notebooks/assets/transcript_visualizations/theme_keyword_prevalence.png)
@@ -152,10 +148,6 @@ Generated figures:
 **Theme co-occurrence across transcripts**
 
 ![Transcript theme co-occurrence heatmap](notebooks/assets/transcript_visualizations/theme_cooccurrence_heatmap.png)
-
-**Finance keyword intensity versus transcript length**
-
-![Finance intensity versus transcript length](notebooks/assets/transcript_visualizations/finance_intensity_vs_length.png)
 
 ## Finance Visualizations
 
